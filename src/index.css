@@ -1,1 +1,288 @@
 @import "tailwindcss";
+
+/* ============ MASTER LIFE SYSTEM — THEME TOKENS ============
+   Seluruh warna sistem mengalir dari CSS variables di bawah ini.
+   Ganti nilai di :root untuk membuat tema baru secara global. */
+:root {
+  --bg: #0b0f14;
+  --panel: #111722;
+  --panel2: #182031;
+  --line: rgba(151, 167, 196, 0.14);
+  --line2: rgba(151, 167, 196, 0.28);
+  --ink: #e7ecf5;
+  --mut: #8c99ae;
+  --dot: rgba(151, 167, 196, 0.09);
+  --acc: #e8b44c;
+  --em: #3ecf8e;
+  --cy: #4cc9e8;
+  --sk: #5fa8f5;
+  --ro: #f07a8a;
+  --or: #f0934c;
+  --li: #b8d65b;
+  --vi: #9c8cf0;
+}
+
+[data-theme="light"] {
+  --bg: #eef1f6;
+  --panel: #ffffff;
+  --panel2: #f4f7fb;
+  --line: rgba(23, 33, 51, 0.12);
+  --line2: rgba(23, 33, 51, 0.24);
+  --ink: #141b26;
+  --mut: #5b6675;
+  --dot: rgba(23, 33, 51, 0.07);
+  --acc: #c9922e;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel2: var(--panel2);
+  --color-line: var(--line);
+  --color-line2: var(--line2);
+  --color-ink: var(--ink);
+  --color-mut: var(--mut);
+  --color-acc: var(--acc);
+  --color-em: var(--em);
+  --color-cy: var(--cy);
+  --color-sk: var(--sk);
+  --color-ro: var(--ro);
+  --color-or: var(--or);
+  --color-li: var(--li);
+  --color-vi: var(--vi);
+  --font-disp: "Space Grotesk", ui-sans-serif, sans-serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  font-size: 14px;
+}
+
+/* lapisan ambient: dot-grid + dua sorotan sudut yang sangat pelan */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: radial-gradient(var(--dot) 1px, transparent 1px);
+  background-size: 26px 26px;
+}
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(900px 480px at 88% -8%, color-mix(in oklab, var(--acc) 7%, transparent), transparent 62%),
+    radial-gradient(760px 520px at -8% 104%, color-mix(in oklab, var(--cy) 5%, transparent), transparent 60%);
+}
+
+::selection {
+  background: color-mix(in oklab, var(--acc) 30%, transparent);
+}
+
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+.scrollbar-none {
+  scrollbar-width: none;
+}
+.scrollbar-none::-webkit-scrollbar {
+  display: none;
+}
+
+*::-webkit-scrollbar {
+  width: 9px;
+  height: 9px;
+}
+*::-webkit-scrollbar-thumb {
+  background: var(--line2);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* ============ komponen inti ============ */
+@layer components {
+  .panel {
+    background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 90%, #ffffff 4%), var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.02) inset, 0 10px 30px -18px rgba(0, 0, 0, 0.55);
+  }
+  [data-theme="light"] .panel {
+    box-shadow: 0 1px 2px rgba(20, 27, 38, 0.05), 0 12px 28px -20px rgba(20, 27, 38, 0.25);
+  }
+  .label-xs {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--mut);
+  }
+  .inp {
+    width: 100%;
+    background: color-mix(in oklab, var(--bg) 70%, var(--panel));
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 9px 12px;
+    font-size: 14px;
+    color: var(--ink);
+    transition: border-color 0.15s, box-shadow 0.15s;
+  }
+  .inp::placeholder {
+    color: color-mix(in oklab, var(--mut) 75%, transparent);
+  }
+  .inp:focus {
+    outline: none;
+    border-color: color-mix(in oklab, var(--acc) 55%, transparent);
+    box-shadow: 0 0 0 3px color-mix(in oklab, var(--acc) 14%, transparent);
+  }
+  select.inp option {
+    background: var(--panel);
+    color: var(--ink);
+  }
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 7px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 9px 14px;
+    border: 1px solid var(--line);
+    color: var(--ink);
+    background: var(--panel2);
+    transition: transform 0.12s, border-color 0.15s, background 0.15s, filter 0.15s;
+    cursor: pointer;
+    user-select: none;
+  }
+  .btn:hover {
+    border-color: var(--line2);
+    filter: brightness(1.06);
+  }
+  .btn:active {
+    transform: translateY(1px) scale(0.99);
+  }
+  .btn-acc {
+    background: var(--acc);
+    border-color: color-mix(in oklab, var(--acc) 60%, #000);
+    color: #171308;
+  }
+  .btn-acc:hover {
+    border-color: var(--acc);
+  }
+}
+
+input[type="range"] {
+  accent-color: var(--acc);
+  width: 100%;
+}
+input[type="date"] {
+  color-scheme: dark;
+}
+[data-theme="light"] input[type="date"] {
+  color-scheme: light;
+}
+
+/* ============ motion ============ */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+@keyframes growY {
+  from {
+    transform: scaleY(0);
+  }
+  to {
+    transform: scaleY(1);
+  }
+}
+@keyframes toastIn {
+  from {
+    opacity: 0;
+    transform: translateX(18px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes drawerIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: none;
+  }
+}
+@keyframes softPulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.35;
+  }
+}
+.reveal {
+  animation: fadeUp 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.fade-in {
+  animation: fadeIn 0.2s ease both;
+}
+.bar-anim {
+  animation: growY 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  transform-origin: bottom;
+}
+.toast-in {
+  animation: toastIn 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.drawer-in {
+  animation: drawerIn 0.25s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+.pulse-dot {
+  animation: softPulse 2s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal,
+  .bar-anim,
+  .toast-in,
+  .drawer-in,
+  .fade-in {
+    animation: none;
+  }
+}
